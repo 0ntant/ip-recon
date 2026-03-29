@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .report-container {
+            background: #1e1e1e;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .report-text {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            background: #0d0d0d;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #222;
+            line-height: 1.4;
+        }
+        button {
+            margin-top: 12px;
+            background-color: #3d5afe;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: #536dfe; }
+        button:active { background-color: #304ffe; }
+    </style>
+</head>
+<body>
+
+
+<div class="report-container">
+    <div class="report-text" id="commonReport">Please stand by. Gathering WHOIS data...</div>
+    <button onclick="copyText('commonReport', this)">Copy</button>
+</div>
+
+<div class="report-container">
+    <div class="report-text" id="systemReport">Please stand by. Running security scan...</div>
+    <button onclick="copyText('systemReport', this)">Copy</button>
+</div>
+
+<script>
+    const targetAddress = "{address}";
+
+    if (targetAddress) {
+        const url = '/report/stream?address=' + encodeURIComponent(targetAddress);
+        const eventSource = new EventSource(url);
+
+        eventSource.addEventListener('whoIs', function(e) {
+            document.getElementById('commonReport').innerText = e.data;
+        });
+
+        eventSource.addEventListener('security', function(e) {
+            document.getElementById('systemReport').innerText = e.data;
+        });
+
+        eventSource.onerror = function() {
+            eventSource.close();
+        };
+    }
+    function copyText(elementId, btn) {
+    const text = document.getElementById(elementId).innerText;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        const originalBg = btn.style.backgroundColor;
+
+        btn.innerText = "Copied!";
+        btn.style.backgroundColor = "#4caf50";
+
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = originalBg;
+        }, 2000);
+    }).catch(err => {
+        console.error('Copy error: ', err);
+    });
+}
+</script>
+
+</body>
+</html>

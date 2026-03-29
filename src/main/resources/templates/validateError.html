@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Validate error</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .report-container {
+            background: #1e1e1e;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .report-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .report-text {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            background: #0d0d0d;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #222;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<div class="error-card">
+    <h1>Неверный формат адреса</h1>
+    <p>Пожалуйста, используйте один из следующих форматов:</p>
+    <ul>
+        <li style="margin-bottom: 20px;">
+            <strong>IPv4:</strong> например, <br>
+            <div style="margin-top: 5px; margin-left: 10px;">
+                {#if request}
+                {request.scheme}://{request.host}/report?address=1.1.1.1<br>
+                {request.scheme}://{request.host}/report?address=1[.]1[.]1[.]1<br>
+                {request.scheme}://{request.host}/report?address=1.1[.]1.1
+                {#else}
+                http://localhost:8080/report?address=1.1.1.1<br>
+                http://localhost:8080/report?address=1[.]1[.]1[.]1<br>
+                http://localhost:8080/report?address=1.1[.]1.1
+                {/if}
+            </div>
+        </li>
+
+        <li>
+            <strong>Домен:</strong> например, <br>
+            <div style="margin-top: 5px; margin-left: 10px;">
+                {#if request}
+                {request.scheme}://{request.host}/report?address=google.com<br>
+                {request.scheme}://{request.host}/report?address=google[.]com<br>
+                {request.scheme}://{request.host}/report?address=https://www.google.com/<br>
+                {request.scheme}://{request.host}/report?address=https://www.google[.]com/
+                {#else}
+                http://localhost:8080/report?address=google.com<br>
+                http://localhost:8080/report?address=google[.]com<br>
+                http://localhost:8080/report?address=https://www.google.com/<br>
+                http://localhost:8080/report?address=https://www.google[.]com/
+                {/if}
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

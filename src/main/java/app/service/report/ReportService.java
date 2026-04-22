@@ -1,6 +1,7 @@
 package app.service.report;
 
 import app.model.*;
+import app.util.NetAddressUtil;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,14 +22,44 @@ public class ReportService {
     @Inject
     NslookupReportService nslookupReportService;
 
-    public Uni<String> securityReportByDomain(String address) {
+    public Uni<String> securityReport(String address){
+        if (NetAddressUtil.isIp(address)) {
+            return securityReportByIp(address);
+        }
+        else if (NetAddressUtil.isDomain(address))
+        {
+            return securityReportByDomain(address);
+        }
+
+        return Uni.createFrom().failure(
+                new IllegalArgumentException(
+                        "Invalid address format for security report: " + address)
+        );
+    }
+
+    public Uni<String> whoIsLikeReport(String address){
+        if (NetAddressUtil.isIp(address)) {
+            return whoIsLikeReportByIp(address);
+        }
+        else if (NetAddressUtil.isDomain(address))
+        {
+            return whoIsLikeReportByDomain(address);
+        }
+
+        return Uni.createFrom().failure(
+                new IllegalArgumentException(
+                        "Invalid address format for whoIs like report: " + address)
+        );
+    }
+
+    private Uni<String> securityReportByDomain(String address) {
         return nslookupReportService.nslookupReport(address)
                 .onItem().transformToUni(item -> {
                     return ipSecurityReport.attackReportForDomain(item);
                 });
     }
 
-    public Uni<String> whoIsLikeReportByDomain(String address) {
+    private Uni<String> whoIsLikeReportByDomain(String address) {
         return nslookupReportService.nslookupReport(address)
                 .onItem().transformToUni(item -> {
                     List<String> allIps = item.getAddressIdDns().values().stream()
@@ -51,11 +82,11 @@ public class ReportService {
                 });
     }
 
-    public Uni<String> whoIsLikeReportByIp(String address) {
+    private Uni<String> whoIsLikeReportByIp(String address) {
         return whoisReportService.whoIsLikeReport(address);
     }
 
-    public Uni<String> securityReportByIp(String address) {
+    private Uni<String> securityReportByIp(String address) {
         return ipSecurityReport.getAttackReportByIp(address);
     }
 }

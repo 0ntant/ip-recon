@@ -52,16 +52,11 @@ public class ReportController {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<OutboundSseEvent> streamData(@QueryParam("address") String address, @Context Sse sse) {
         logIncomingRequest();
-        if (NetAddressUtil.isIp(address)) {
-            return createSseMulti(sse,
-                    reportService.whoIsLikeReportByIp(address),
-                    reportService.securityReportByIp(address));
-        } else if (NetAddressUtil.isDomain(address)) {
-            return createSseMulti(sse,
-                    reportService.whoIsLikeReportByDomain(address),
-                    reportService.securityReportByDomain(address));
-        }
-        return Multi.createFrom().empty();
+
+        return createSseMulti(sse,
+                reportService.whoIsLikeReport(address),
+                reportService.securityReport(address)
+        );
     }
 
     private Multi<OutboundSseEvent> createSseMulti(Sse sse, Uni<String> whoIsUni, Uni<String> secUni) {
@@ -76,8 +71,6 @@ public class ReportController {
 
         String fullPath = request.path() + (request.query() != null ? "?" + request.query() : "");
 
-        String clientIp = request.remoteAddress().host();
-
-        log.info("[{}] {} | Client IP: {}", request.method(), fullPath, clientIp);
+        log.info("[{}] {}", request.method(), fullPath);
     }
 }

@@ -46,7 +46,7 @@ public class IpSecurityReport
             entry(16, new AttackTypeTitle("SQL Injection", "выполнении SQL-инъекций")),
             entry(17, new AttackTypeTitle("Spoofing", "спуфинге")),
             entry(18, new AttackTypeTitle("Brute-Force", "брутфорс-атаках")),
-            entry(19, new AttackTypeTitle("Bad Web Bot", "является вредоносным ботом")),
+            entry(19, new AttackTypeTitle("Bad Web Bot", "деятельности как вредоносный бот")),
             entry(20, new AttackTypeTitle("Exploited Host", "является взломанным хостом")),
             entry(21, new AttackTypeTitle("Web App Attack", "атаках на веб-приложение")),
             entry(22, new AttackTypeTitle("SSH", "злоупотреблении SSH")),
@@ -167,7 +167,7 @@ public class IpSecurityReport
         if (abuseIPDBReport.data == null
                 || abuseIPDBReport.data.results == null
                 || abuseIPDBReport.data.results.isEmpty()) {
-            return "- в сетевых атаках не замечен;";
+            return "- в сетевых атаках не замечен";
         }
 
         Map<Integer, Long> categoryCounts = abuseIPDBReport.data.results.stream()

@@ -43,3 +43,5 @@ src/test/resources/**
 .idea
 .mvn
 .mvn/**
+
+logs/*

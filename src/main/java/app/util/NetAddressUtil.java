@@ -21,20 +21,7 @@ public class NetAddressUtil {
     public static String defang(String value) {
         if (isIp(value)) {
             String[] parts = value.split("\\.");
-            int dotToWrap = ThreadLocalRandom.current().nextInt(3);
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < parts.length; i++) {
-                sb.append(parts[i]);
-                if (i < parts.length - 1) {
-                    if (i == dotToWrap) {
-                        sb.append("[.]");
-                    } else {
-                        sb.append(".");
-                    }
-                }
-            }
-            return sb.toString();
+            return parts[0] + "." + parts[1] + "." + parts[2] + "[.]" + parts[3];
         }
 
         return value.replace(".", "[.]");
